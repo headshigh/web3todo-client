@@ -23,12 +23,16 @@ function Page() {
     try {
       //@ts-expect-error
       const { ethereum } = window;
-      if (ethereum) console.log("metamask is installed");
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
-      setSigner(accounts[0]);
-      console.log(signer);
+      if (ethereum) {
+        console.log("metamask is installed");
+        const accounts = await ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        setSigner(accounts[0]);
+        console.log(signer);
+      } else {
+        console.log("not installed");
+      }
     } catch (err) {
       console.log(err);
     }
@@ -76,7 +80,8 @@ function Page() {
     // Check if MetaMask is installed and available
     connectWallet();
     getAllTasks();
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   console.log(tasks);
   if (!signer) return <h1>please connect your account</h1>;
 
@@ -84,6 +89,7 @@ function Page() {
     <div className=" min-h-screen">
       <div className="pt-8 flex justify-center">
         <TextField
+          className="bg-white"
           id="outlined-basic"
           label="Make Todo"
           variant="outlined"
