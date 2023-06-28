@@ -11,6 +11,9 @@ interface task {
   tastText: string;
   deleted: boolean;
 }
+interface Window {
+  ethereum?: any;
+}
 function Page() {
   const [taskText, setTaskText] = useState();
   const [signer, setSigner] = useState();
@@ -18,6 +21,7 @@ function Page() {
   const [tasks, setTasks] = useState<taskinterface[]>([]);
   const connectWallet = async () => {
     try {
+      //@ts-expect-error
       const { ethereum } = window;
       if (ethereum) console.log("metamask is installed");
       const accounts = await ethereum.request({
@@ -31,8 +35,10 @@ function Page() {
   };
   const createTask = async () => {
     try {
+      //@ts-expect-error
       const { ethereum } = window;
       if (ethereum) {
+        //@ts-expect-error
         let provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = await provider.getSigner();
         const todoContract = new Contract(
@@ -49,8 +55,11 @@ function Page() {
 
   const getAllTasks = async () => {
     console.log("getting tasks");
+    //@ts-expect-error
     const { ethereum } = window;
     if (ethereum) {
+      //@ts-expect-error
+
       let provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = await provider.getSigner();
       const todoContract = new ethers.Contract(
@@ -67,7 +76,7 @@ function Page() {
     // Check if MetaMask is installed and available
     connectWallet();
     getAllTasks();
-  }, []);
+  });
   console.log(tasks);
   if (!signer) return <h1>please connect your account</h1>;
 
@@ -81,7 +90,7 @@ function Page() {
           style={{ margin: "0px 5px" }}
           size="small"
           value={taskText}
-          onChange={(e) => setTaskText(e.target.value)}
+          onChange={(e: any) => setTaskText(e.target.value)}
         />
         <Button variant="contained" color="secondary" onClick={createTask}>
           Add Task
